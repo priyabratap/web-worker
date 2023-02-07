@@ -79,12 +79,38 @@ changeColorBtn.addEventListener("click", function changeBackgroundColor() {
   document.body.style.background = randomColor;
 });
 
+// // blocking code
+// blockingBtn.addEventListener("click", function blockMainThread() {
+//   let counter = 0;
+//   for (let i = 0; i < 50000000000; i++) {
+//     counter++;
+//     // output.textContent = `Result: ${counter}`;
+//   }
+//   output.textContent = `Result: ${counter}`;
+// });
+
+// blocking code with worker
 blockingBtn.addEventListener("click", function blockMainThread() {
-  const worker = new Worker("worker.js");
+  // const worker = new Worker("worker.js");
+  // Loaded function as URL to avoid crossorigin and loading from file://filetojspath.js
+  const worker = new Worker(URL.createObjectURL(new Blob(["("+worker_function.toString()+")()"], {type: 'text/javascript'})));
   worker.onmessage = (msg) => {
     output.textContent = `Result: ${msg.data}`;
   };
 });
+
+
+function worker_function() {
+    // all worker code here
+  let counter = 0;
+  for (let i = 0; i < 50000000; i++) {
+    counter++;
+    // console.log("counter",counter)
+    postMessage(counter);
+  }
+  // postMessage(counter);
+}
+
 
 </script>
 </body>
