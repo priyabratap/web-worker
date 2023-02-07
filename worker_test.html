@@ -1,0 +1,91 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<style type="text/css">
+  body {
+  background: #fff;
+  font-size: 16px;
+}
+
+.wrapper {
+  max-width: 600px;
+  margin: 0 auto;
+}
+.total-count {
+  margin-bottom: 34px;
+  font-size: 32px;
+  text-align: center;
+}
+
+.buttons {
+  border: 1px solid green;
+  padding: 1rem;
+  margin-bottom: 16px;
+}
+
+.btn {
+  border: 0;
+  padding: 1rem;
+}
+
+.btn-blocking {
+  background-color: #f44336;
+  color: #fff;
+}
+
+#changebtn {
+  background-color: #4caf50;
+  color: #fff;
+}
+
+</style>
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web Workers</title>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="total-count"></div>
+      <div class="buttons">
+        <button class="btn btn-blocking" id="blockbtn">Blocking Task</button>
+        <button class="btn btn-nonblocking" id="incrementbtn">Increment</button>
+        <button class="btn btn-nonblocking" id="changebtn">
+          Change Background
+        </button>
+      </div>
+      <div class="output"></div>
+    </div>  
+
+<script type="text/javascript">
+const blockingBtn = document.getElementById("blockbtn");
+const incrementBtn = document.getElementById("incrementbtn");
+const changeColorBtn = document.getElementById("changebtn");
+const output = document.querySelector(".output");
+const totalCountEl = document.querySelector(".total-count");
+totalCountEl.textContent = 0;
+
+incrementBtn.addEventListener("click", function incrementValue() {
+  let counter = totalCountEl.textContent;
+  counter++;
+  totalCountEl.textContent = counter;
+});
+
+changeColorBtn.addEventListener("click", function changeBackgroundColor() {
+  colors = ["#009688", "#ffc107", "#dadada"];
+  const randomIndex = Math.floor(Math.random() * colors.length)
+  const randomColor = colors[randomIndex];
+  document.body.style.background = randomColor;
+});
+
+blockingBtn.addEventListener("click", function blockMainThread() {
+  const worker = new Worker("worker.js");
+  worker.onmessage = (msg) => {
+    output.textContent = `Result: ${msg.data}`;
+  };
+});
+
+</script>
+</body>
+</html>
